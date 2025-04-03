@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal49 Map Test</title>
+    <link rel="stylesheet" href="https://map.terminal49.com/bundle.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #map-container {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Terminal49 Map Embed Test</h1>
+
+    <div class="form-group">
+        <label for="apiKey">API Key:</label>
+        <input type="text" id="apiKey" placeholder="Enter your Terminal49 API key">
+    </div>
+
+    <div class="form-group">
+        <label for="shipmentId">Shipment ID:</label>
+        <input type="text" id="shipmentId" placeholder="Enter shipment ID">
+    </div>
+
+    <div class="form-group">
+        <label for="containerId">Container ID:</label>
+        <input type="text" id="containerId" placeholder="Enter container ID">
+    </div>
+
+    <button id="loadMap">Load Map</button>
+
+    <div id="map-container"></div>
+
+    <script src="https://map.terminal49.com/bundle.js"></script>
+    <script>
+        document.getElementById('loadMap').addEventListener('click', async function() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const shipmentId = document.getElementById('shipmentId').value.trim();
+            const containerId = document.getElementById('containerId').value.trim();
+
+            if (!apiKey || !shipmentId || !containerId) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            await loadMap(apiKey, shipmentId, containerId);
+        });
+
+        async function loadMap(apiKey, shipmentId, containerId) {
+            // Clear previous map
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.innerHTML = '';
+
+            // Initialize Terminal49 Map according to docs
+            const map = new window.TntMap("#map-container", {
+                authToken: apiKey,
+            });
+
+            await map.start();
+            await map.load(shipmentId, containerId);
+        }
+    </script>
+
+    <hr style="margin-top: 40px;">
+    <h2>Implementation Guide</h2>
+
+    <h3>Step 1: Add CSS in the &lt;head&gt; section</h3>
+    <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Your Page Title&lt;/title&gt;
+  &lt;link rel="stylesheet" href="https://map.terminal49.com/bundle.css" /&gt;
+  &lt;!-- Your other styles --&gt;
+&lt;/head&gt;
+    </pre>
+
+    <h3>Step 2: Create a container for the map</h3>
+    <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;!-- In the body of your HTML --&gt;
+&lt;div id="map"&gt;&lt;/div&gt;
+    </pre>
+
+    <h3>Step 3: Add JavaScript before &lt;/body&gt;</h3>
+    <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;!-- Add the Terminal49 map bundle before your own scripts --&gt;
+&lt;script src="https://map.terminal49.com/bundle.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  // Basic implementation
+  const map = new window.TntMap("#map", {
+    authToken: "your_publishable_api_key_here",
+  });
+
+  // Inside an async function
+  async function initMap() {
+    await map.start();
+    await map.load("shipment_id_here", "container_id_here");
+  }
+
+  // Call the function
+  initMap();
+&lt;/script&gt;
+&lt;/body&gt;
+    </pre>
+</body>
+</html>
